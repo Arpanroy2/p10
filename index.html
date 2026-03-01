@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌞 SUN: stellar psychedelia + animated starfield ✦</title>
+    <style>
+        /* ---------- RESET / FONTS / GLOBAL ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', 'Poppins', 'Segoe UI', sans-serif;
+            background-color: #030014;
+            overflow-x: hidden;
+            color: #fff9e6;
+            line-height: 1.5;
+            position: relative;
+            min-height: 100vh;
+            animation: cosmicHue 30s infinite alternate ease-in-out;
+        }
+
+        @keyframes cosmicHue {
+            0% { backdrop-filter: hue-rotate(0deg) brightness(1); }
+            25% { backdrop-filter: hue-rotate(10deg) brightness(1.05); }
+            50% { backdrop-filter: hue-rotate(20deg) brightness(1.1); }
+            75% { backdrop-filter: hue-rotate(5deg) brightness(0.95); }
+            100% { backdrop-filter: hue-rotate(0deg) brightness(1); }
+        }
+
+        /* ---------- CANVAS STARFIELD (new animated background) ---------- */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -5;          /* behind everything */
+            pointer-events: none;
+            background: transparent;
+        }
+
+        /* floating planets background (existing, now above starfield) */
+        .planet-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -4;           /* just above starfield, below content */
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.4), inset -20px -20px 50px rgba(0,0,0,0.7);
+            opacity: 0.3;
+            animation: floatPlanet linear infinite;
+            mix-blend-mode: screen;
+        }
+
+        @keyframes floatPlanet {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            33% { transform: translate(30px, -50px) rotate(120deg) scale(1.1); }
+            66% { transform: translate(-20px, 40px) rotate(240deg) scale(0.9); }
+            100% { transform: translate(0, 0) rotate(360deg) scale(1); }
+        }
+
+        /* main content panels */
+        .content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 2rem 5rem;
+            position: relative;
+            z-index: 5;
+            backdrop-filter: blur(2px);
+        }
+
+        /* sliding sections */
+        .section {
+            background: rgba(10, 2, 30, 0.65);
+            backdrop-filter: blur(8px) saturate(180%);
+            border: 2px solid rgba(255, 220, 100, 0.3);
+            border-radius: 40px 10px 40px 10px;
+            padding: 2rem;
+            margin: 3rem 0;
+            box-shadow: 0 30px 40px -20px black, 0 0 0 2px #ffb34733, 0 0 40px #f0e68c55;
+            transition: all 0.3s;
+            animation: slideGlide 1s ease-out;
+            color: #fffdd0;
+        }
+
+        @keyframes slideGlide {
+            0% { opacity: 0; transform: translateX(-80px) rotate(-1deg); }
+            80% { transform: translateX(10px) rotate(0.5deg); }
+            100% { opacity: 1; transform: translateX(0) rotate(0); }
+        }
+
+        .section:nth-child(even) {
+            animation: slideGlideRight 1s ease-out;
+        }
+        @keyframes slideGlideRight {
+            0% { opacity: 0; transform: translateX(80px) rotate(1deg); }
+            80% { transform: translateX(-10px) rotate(-0.5deg); }
+            100% { opacity: 1; transform: translateX(0) rotate(0); }
+        }
+
+        h1, h2, h3 {
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px cyan, 0 0 30px magenta, 2px 2px 0 black;
+        }
+
+        h1 { font-size: 4.2rem; text-align: center; margin: 1rem 0; color: #fffbb0; }
+        h2 { font-size: 2.6rem; border-left: 10px solid #ffaa00; padding-left: 20px; margin: 2rem 0 1rem; color: #ffe68f; }
+        h3 { font-size: 2rem; color: #ffb851; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 1.1rem;
+            background: #0d002bbb;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 0 30px #7d4eff66;
+            color: #f0f3ff;
+        }
+
+        th, td {
+            padding: 12px 20px;
+            border-bottom: 1px solid #ffb86c80;
+            text-align: left;
+        }
+
+        th {
+            background: #4b0082cc;
+            color: #ffdb9f;
+            font-size: 1.3rem;
+            text-shadow: 0 0 5px gold;
+        }
+
+        td {
+            background: #11062bcc;
+        }
+
+        tr:hover td {
+            background: #301964cc;
+            transition: 0.2s;
+        }
+
+        /* lists and specials */
+        ul, ol {
+            padding-left: 2rem;
+            font-size: 1.2rem;
+            list-style-type: "✨ ";
+        }
+
+        li {
+            margin: 0.6rem 0;
+            text-shadow: 0 0 6px hotpink;
+        }
+
+        /* floating buttons */
+        .float-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .float-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ffd966, #b45f06);
+            border: 3px solid #ffe484;
+            color: #1a0033;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 0 30px #ffb347;
+            animation: float 4s infinite alternate ease-in-out;
+            backdrop-filter: blur(6px);
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .float-btn:hover {
+            transform: scale(1.3) rotate(10deg);
+            background: radial-gradient(circle at 30% 30%, #ffffaa, #ff8800);
+            box-shadow: 0 0 60px yellow, 0 0 120px orange;
+            border-color: white;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-25px) rotate(5deg); }
+        }
+
+        /* sun main image */
+        .sun-lord {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            filter: drop-shadow(0 0 80px #f4a460) brightness(1.1);
+            animation: sunPulse 6s infinite alternate;
+        }
+
+        .sun-lord img {
+            max-width: 350px;
+            border-radius: 50%;
+            border: 8px solid #ffaa33;
+            box-shadow: 0 0 120px #ff7f2a, 0 0 200px #f00;
+        }
+
+        @keyframes sunPulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 60px orange); }
+            100% { transform: scale(1.05); filter: drop-shadow(0 0 140px #ff4500); }
+        }
+
+        /* exploded / crash animation */
+        .explode-wrapper {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            margin: 3rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .explode-trigger {
+            background: black;
+            color: gold;
+            font-size: 2rem;
+            padding: 1.5rem 3rem;
+            border: 4px dashed red;
+            border-radius: 60px;
+            cursor: pointer;
+            z-index: 10;
+            font-weight: 900;
+            animation: shake 0.5s infinite alternate;
+            box-shadow: 0 0 40px red, 0 0 90px orange;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(0px, 0px) rotate(0deg); }
+            25% { transform: translate(-5px, 5px) rotate(-2deg); }
+            50% { transform: translate(5px, -3px) rotate(2deg); }
+            100% { transform: translate(0, 0) rotate(0); }
+        }
+
+        .explode-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .explode-trigger:hover ~ .explode-effect {
+            animation: explode 1s forwards;
+        }
+
+        .explode-effect::before, .explode-effect::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,200,0,0.9) 0%, rgba(255,0,0,0.8) 40%, transparent 80%);
+            border-radius: 50%;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        @keyframes explode {
+            0% { opacity: 0; transform: scale(0); }
+            10% { opacity: 1; transform: scale(2); background: radial-gradient(circle, yellow 10%, orange 50%, red 80%); }
+            30% { opacity: 0.9; transform: scale(5) rotate(30deg); filter: blur(10px); background: radial-gradient(circle, white, gold, crimson);}
+            60% { opacity: 0.5; transform: scale(12) rotate(90deg); background: radial-gradient(circle, #fffaab, #ff7b00, #b30000);}
+            100% { opacity: 0; transform: scale(20); background: radial-gradient(circle, #ffffe0, #ff8c00, #800000);}
+        }
+
+        /* rainbow text */
+        .rainbow-text {
+            background: linear-gradient(45deg, #ffcc00, #ff6ec7, #3b9eff, #9b59b6, #ffcc00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: rainbow 8s infinite;
+            font-weight: bold;
+        }
+
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .code-block {
+            background: #220033aa;
+            padding: 1.5rem;
+            font-family: monospace;
+            border-left: 8px solid magenta;
+            border-radius: 30px;
+        }
+
+        hr {
+            border: 2px solid #ffa50066;
+            box-shadow: 0 0 30px orangered;
+            margin: 2rem;
+        }
+
+        @media (max-width: 700px) {
+            h1 { font-size: 2.5rem; }
+            .section { padding: 1rem; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- NEW: Canvas starfield (animated background) -->
+    <canvas id="starfield"></canvas>
+
+    <!-- existing animated planets background using space images 1..8 -->
+    <div class="planet-bg">
+        <div class="planet" style="width: 250px; height: 250px; top: 5%; left: -3%; background-image: url('space1.jpg'); animation-duration: 42s;"></div>
+        <div class="planet" style="width: 400px; height: 400px; bottom: -10%; right: -5%; background-image: url('space2.jpg'); animation-duration: 67s; opacity: 0.2;"></div>
+        <div class="planet" style="width: 180px; height: 180px; top: 30%; right: 15%; background-image: url('space3.jpg'); animation-duration: 33s;"></div>
+        <div class="planet" style="width: 320px; height: 320px; bottom: 20%; left: 10%; background-image: url('space4.jpg'); animation-duration: 91s;"></div>
+        <div class="planet" style="width: 500px; height: 500px; top: -10%; right: -10%; background-image: url('space5.jpg'); animation-duration: 120s; opacity: 0.15;"></div>
+        <div class="planet" style="width: 200px; height: 200px; bottom: 40%; left: 30%; background-image: url('space6.jpg'); animation-duration: 22s;"></div>
+        <div class="planet" style="width: 350px; height: 350px; top: 70%; left: 5%; background-image: url('space7.jpg'); animation-duration: 55s;"></div>
+        <div class="planet" style="width: 280px; height: 280px; bottom: 5%; right: 25%; background-image: url('space8.jpg'); animation-duration: 80s;"></div>
+    </div>
+
+    <!-- main content -->
+    <div class="content">
+        <div class="sun-lord">
+            <img src="sun.jpg" alt="The Sun" style="width:100%; max-width:400px;">
+        </div>
+        <h1>☀️ THE SUN: COMPREHENSIVE SCIENTIFIC OVERVIEW ☀️</h1>
+
+        <!-- 1. Basic Properties -->
+        <section class="section">
+            <h2>1. Basic Properties & Identity</h2>
+            <table>
+                <tr><th>Property</th><th>Value</th></tr>
+                <tr><td>Name</td><td>Sun (Sol in Latin)</td></tr>
+                <tr><td>Type</td><td>G-type main-sequence star (G2V yellow dwarf)</td></tr>
+                <tr><td>Age</td><td>4.603 billion years</td></tr>
+                <tr><td>Location</td><td>Milky Way galaxy, Orion Arm, 26,660 light-years from galactic center</td></tr>
+                <tr><td>Distance from Earth</td><td>149.6 million km (1 Astronomical Unit)</td></tr>
+                <tr><td>Diameter</td><td>1.3927 million km (109× Earth)</td></tr>
+                <tr><td>Mass</td><td>1.989 × 10³⁰ kg (333,000× Earth)</td></tr>
+                <tr><td>Volume</td><td>1.41 × 10²⁷ m³ (1.3 million× Earth)</td></tr>
+                <tr><td>Density (average)</td><td>1.408 g/cm³</td></tr>
+                <tr><td>Luminosity</td><td>3.828 × 10²⁶ W</td></tr>
+                <tr><td>Magnitude</td><td>-26.74 (apparent), 4.83 (absolute)</td></tr>
+            </table>
+        </section>
+
+        <!-- 2 Origin & Formation -->
+        <section class="section">
+            <h2>2. Origin & Formation</h2>
+            <p><strong>From Quantum Fluctuations to Star</strong></p>
+            <ul>
+                <li>13.8 billion years ago: Big Bang creates quarks → protons/neutrons → hydrogen/helium</li>
+                <li>4.6 billion years ago: A molecular cloud collapses</li>
+                <li>Trigger: Shockwave from a nearby supernova explosion</li>
+                <li>Gravitational collapse → Protostar phase (15 million K)</li>
+                <li>T-Tauri phase: intense solar winds</li>
+                <li>Main sequence begins</li>
+            </ul>
+            <h3>Solar Nebula Composition at Formation</h3>
+            <table><tr><th>Element</th><th>Percentage</th></tr>
+                <tr><td>Hydrogen</td><td>71%</td></tr><tr><td>Helium</td><td>27%</td></tr><tr><td>Oxygen</td><td>0.97%</td></tr><tr><td>Carbon</td><td>0.40%</td></tr><tr><td>Iron</td><td>0.14%</td></tr><tr><td>Neon</td><td>0.10%</td></tr><tr><td>Nitrogen</td><td>0.096%</td></tr><tr><td>Silicon</td><td>0.065%</td></tr><tr><td>Magnesium</td><td>0.058%</td></tr><tr><td>Sulfur</td><td>0.040%</td></tr>
+            </table>
+        </section>
+
+        <!-- 3 Composition -->
+        <section class="section">
+            <h2>3. Composition (Elemental & Isotopic)</h2>
+            <h3>Current Photosphere Composition (by mass)</h3>
+            <table><tr><th>Element</th><th>Percentage</th></tr><tr><td>Hydrogen</td><td>73.46%</td></tr><tr><td>Helium</td><td>24.85%</td></tr><tr><td>Oxygen</td><td>0.77%</td></tr><tr><td>Carbon</td><td>0.29%</td></tr><tr><td>Iron</td><td>0.16%</td></tr><tr><td>Neon</td><td>0.12%</td></tr><tr><td>Nitrogen</td><td>0.09%</td></tr><tr><td>Silicon</td><td>0.07%</td></tr><tr><td>Magnesium</td><td>0.05%</td></tr><tr><td>Sulfur</td><td>0.04%</td></tr></table>
+            <p><span class="rainbow-text">Isotopic composition:</span> Hydrogen: ~99.985% protium, 0.015% deuterium; Helium: ⁴He dominates; Lithium: Mostly ⁷Li (depleted). By particle count: Hydrogen 91.2%, Helium 8.7%, everything else 0.1%.</p>
+        </section>
+
+        <!-- 4 Internal Structure -->
+        <section class="section">
+            <h2>4. Internal Structure & Layers</h2>
+            <pre class="code-block">
+                    ← Core
+                 ← Radiative Zone
+              ← Convective Zone
+           ← Photosphere
+        ← Chromosphere
+     ← Transition Region
+  ← Corona
+← Solar Wind
+            </pre>
+            <ul>
+                <li><strong>Core</strong> (0-0.25 R☉): 15.7M K, density 150 g/cm³, fusion</li>
+                <li><strong>Radiative Zone</strong> (0.25-0.7 R☉): 7M→2M K</li>
+                <li><strong>Tachocline</strong>: shear region, magnetic dynamo</li>
+                <li><strong>Convective Zone</strong> (0.7-1.0 R☉): convection</li>
+                <li><strong>Photosphere</strong>: visible surface, 5,772 K</li>
+                <li><strong>Chromosphere</strong>: 4,000→25,000 K</li>
+                <li><strong>Transition Region</strong>: 25,000K → 1M K</li>
+                <li><strong>Corona</strong>: 1-3M K, tenuous</li>
+                <li><strong>Heliosphere</strong> to ~120 AU</li>
+            </ul>
+        </section>
+
+        <!-- 5 Energy generation -->
+        <section class="section">
+            <h2>5. Energy Generation & Nuclear Physics</h2>
+            <p>Proton-Proton chain: 600 million tons H/second. Mass converted: 4.26 million tons/s → 3.828e26 W. Quantum tunneling essential.</p>
+        </section>
+
+        <!-- 6 Temperature Profile -->
+        <section class="section">
+            <h2>6. Temperature Profile</h2>
+            <table><tr><th>Layer</th><th>Temperature (K)</th></tr>
+                <tr><td>Core center</td><td>15.7 million</td></tr><tr><td>Core edge</td><td>7 million</td></tr><tr><td>Radiative zone</td><td>7 million → 2 million</td></tr><tr><td>Convective zone</td><td>2 million → 5,800</td></tr><tr><td>Photosphere</td><td>5,772</td></tr><tr><td>Sunspot umbra</td><td>3,500-4,500</td></tr><tr><td>Chromosphere</td><td>4,000 → 25,000</td></tr><tr><td>Transition region</td><td>25,000 → 1 million</td></tr><tr><td>Corona</td><td>1-3 million</td></tr><tr><td>Solar wind</td><td>10⁵-10⁶</td></tr>
+            </table>
+            <p class="rainbow-text">Paradox: Corona 200× hotter than photosphere.</p>
+        </section>
+
+        <!-- 7 Density Profile -->
+        <section class="section">
+            <h2>7. Density Profile</h2>
+            <table><tr><th>Layer</th><th>Density (g/cm³)</th></tr>
+                <tr><td>Core center</td><td>150</td></tr><tr><td>Radiative zone</td><td>20 → 0.2</td></tr><tr><td>Convective zone base</td><td>0.2</td></tr><tr><td>Photosphere</td><td>0.0000002</td></tr><tr><td>Chromosphere</td><td>10⁻¹⁰</td></tr><tr><td>Corona</td><td>10⁻¹⁵</td></tr>
+            </table>
+        </section>
+
+        <!-- 8 Pressure Profile -->
+        <section class="section">
+            <h2>8. Pressure Profile</h2>
+            <table><tr><th>Layer</th><th>Pressure (Pa)</th></tr>
+                <tr><td>Core</td><td>2.5 × 10¹⁶</td></tr><tr><td>Radiative zone</td><td>10¹⁴ → 10¹¹</td></tr><tr><td>Convective zone</td><td>10¹¹ → 10⁴</td></tr><tr><td>Photosphere</td><td>10⁴ → 10⁻²</td></tr><tr><td>Corona</td><td>10⁻⁵</td></tr>
+            </table>
+        </section>
+
+        <!-- 9 Magnetic Field -->
+        <section class="section">
+            <h2>9. Magnetic Field & Activity</h2>
+            <p>Global ~1 Gauss, sunspots 1500-3000G, 11-year cycle.</p>
+        </section>
+
+        <!-- 10 Rotation -->
+        <section class="section">
+            <h2>10. Rotation & Motion</h2>
+            <p>Differential: equator 24.47d, poles ~35d. Galactic orbit 230km/s.</p>
+        </section>
+
+        <!-- 11 Solar atmosphere -->
+        <section class="section">
+            <h2>11. Solar Atmosphere & Weather</h2>
+            <p>Quiet sun granulation, active sunspots, CMEs, solar wind 300-800km/s.</p>
+        </section>
+
+        <!-- 12 Light & EM Spectrum -->
+        <section class="section">
+            <h2>12. Light & Electromagnetic Spectrum</h2>
+            <p>Peak 502 nm, visible 42%, solar constant 1361 W/m².</p>
+        </section>
+
+        <!-- 13 Gravitational Properties -->
+        <section class="section">
+            <h2>13. Gravitational Properties</h2>
+            <p>Surface gravity 274 m/s², escape velocity 617.7 km/s.</p>
+        </section>
+
+        <!-- 14 Black hole possibility -->
+        <section class="section">
+            <h2>14. Black Hole Possibility</h2>
+            <p>Current mass insufficient for collapse. If compressed to black hole, Schwarzschild radius 2.95 km, Earth orbit unchanged – but darkness.</p>
+        </section>
+
+        <!-- 15 Evolution -->
+        <section class="section">
+            <h2>15. Evolution: Past & Future</h2>
+            <pre>13.8BYA ... NOW ... +5.4BYA red giant ... white dwarf</pre>
+        </section>
+
+        <!-- 16 Life -->
+        <section class="section">
+            <h2>16. Life & Habitability</h2>
+            <p>No life ON sun. Earth depends on Sun. Hypothetical plasma life? sci-fi.</p>
+        </section>
+
+        <!-- 17 Why star not planet -->
+        <section class="section">
+            <h2>17. Why Is It a Star, Not a Planet?</h2>
+            <p>Nuclear fusion, mass >80 Jupiter masses, self-luminous.</p>
+        </section>
+
+        <!-- 18 Atomic & Quantum -->
+        <section class="section">
+            <h2>18. Atomic & Quantum Behavior</h2>
+            <p>Plasma state, quantum tunneling, Pauli exclusion.</p>
+        </section>
+
+        <!-- 19 Large-Scale -->
+        <section class="section">
+            <h2>19. Large-Scale Properties</h2>
+            <p>Mass 333,000 Earths, 10⁵⁷ atoms.</p>
+        </section>
+
+        <!-- 20 Mysteries -->
+        <section class="section">
+            <h2>20. Mysteries & Unsolved Questions</h2>
+            <ul>
+                <li>Coronal heating problem</li>
+                <li>Solar cycle origin</li>
+                <li>Neutrino oscillations</li>
+                <li>Magnetic dynamo</li>
+                <li>Solar minima</li>
+            </ul>
+        </section>
+
+        <!-- 21 Summary Table -->
+        <section class="section">
+            <h2>21. Summary Table</h2>
+            <table>
+                <tr><th>Aspect</th><th>Summary</th></tr>
+                <tr><td>Identity</td><td>G2V yellow dwarf</td></tr>
+                <tr><td>Age</td><td>4.603 billion years</td></tr>
+                <tr><td>Composition</td><td>73% H, 25% He</td></tr>
+                <tr><td>Energy source</td><td>Proton-proton chain</td></tr>
+                <tr><td>Future</td><td>Red giant → white dwarf</td></tr>
+            </table>
+        </section>
+
+        <!-- exploded animation area -->
+        <div class="explode-wrapper">
+            <div class="explode-trigger">💥 CRASH & EXPLODE 💥</div>
+            <div class="explode-effect"></div>
+        </div>
+        <p style="text-align:center;">✨ HOVER ABOVE TO WITNESS MIND-BLOWING SUPERNOVA ✨</p>
+    </div>
+
+    <!-- floating buttons -->
+    <div class="float-buttons">
+        <button class="float-btn" onclick="window.scrollTo({top:0, behavior:'smooth'});">🌞</button>
+        <button class="float-btn" onclick="alert('The Sun is love ☀️')">❤️</button>
+        <button class="float-btn" onclick="document.body.style.animation='none';void this;">🌀</button>
+        <button class="float-btn" onclick="location.reload();">💫</button>
+    </div>
+
+    <!-- JavaScript for animated starfield -->
+    <script>
+        (function() {
+            const canvas = document.getElementById('starfield');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let stars = [];
+            const STAR_COUNT = 600;
+
+            function initStars() {
+                stars = [];
+                for (let i = 0; i < STAR_COUNT; i++) {
+                    stars.push({
+                        x: Math.random(),
+                        y: Math.random(),
+                        radius: Math.random() * 2.2 + 0.8,
+                        brightness: Math.random() * 0.8 + 0.3,
+                        speed: 0.0001 + Math.random() * 0.0003,
+                        twinkleSpeed: 0.002 + Math.random() * 0.005,
+                        twinklePhase: Math.random() * 2 * Math.PI,
+                    });
+                }
+            }
+
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            }
+
+            function drawStars() {
+                if (!ctx) return;
+                ctx.clearRect(0, 0, width, height);
+
+                // subtle gradient background (deep space)
+                const gradient = ctx.createRadialGradient(width*0.5, height*0.5, 0, width*0.5, height*0.5, Math.max(width, height)*0.8);
+                gradient.addColorStop(0, '#030014');
+                gradient.addColorStop(1, '#140b2b');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width, height);
+
+                // draw stars
+                for (let s of stars) {
+                    // slight movement: x and y drift over time
+                    let x = (s.x + s.speed * 0.1 * Date.now() * 0.005) % 1.0;
+                    let y = (s.y + s.speed * 0.05 * Date.now() * 0.005) % 1.0;
+                    // twinkling brightness
+                    let twinkle = Math.sin(Date.now() * s.twinkleSpeed + s.twinklePhase) * 0.25 + 0.75;
+                    let alpha = Math.min(s.brightness * twinkle, 1.0);
+
+                    ctx.beginPath();
+                    ctx.arc(x * width, y * height, s.radius, 0, 2 * Math.PI);
+                    ctx.fillStyle = `rgba(255, 255, 230, ${alpha})`;
+                    ctx.fill();
+
+                    // occasional slight glow for larger stars
+                    if (s.radius > 1.8) {
+                        ctx.shadowColor = 'white';
+                        ctx.shadowBlur = 6;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+
+                requestAnimationFrame(drawStars);
+            }
+
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+                // reposition stars relative to new dimensions, keep proportions
+            });
+
+            initStars();
+            resizeCanvas();
+            drawStars();
+        })();
+    </script>
+</body>
+</html>
